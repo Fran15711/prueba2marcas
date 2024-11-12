@@ -55,18 +55,19 @@ document.addEventListener('DOMContentLoaded', () => {
     button.classList.add('dynamic-button');
     
     if (buttonData.isExternalAudio) {
-      // Si el botón es para audio externo, no generamos una imagen, solo el botón
-      button.textContent = "Reproducir Audio Externo"; // Puedes personalizar el texto si lo deseas
+      // Este botón es reemplazado por el botón y visualizador del script externo (radio.js)
+      // Eliminamos la creación de una imagen para el primer botón y lo dejamos vacío
+      button.textContent = "Reproducir Audio Externo"; // Texto opcional si se desea
       button.addEventListener('click', () => {
-        // Llamamos a la función playExternalAudio definida en radio.js
-        if (typeof playExternalAudio === 'function') {
-          playExternalAudio();
+        // Aquí vamos a cargar el visualizador y el audio del script externo
+        if (typeof initializeExternalAudioPlayer === 'function') {
+          initializeExternalAudioPlayer(seccion3); // Llamamos a la función para inicializar el reproductor
         } else {
-          console.error('La función playExternalAudio no está definida.');
+          console.error('La función initializeExternalAudioPlayer no está definida.');
         }
       });
     } else if (buttonData.link) {
-      // Si es un enlace, usamos la imagen y lo enlazamos
+      // Para los otros botones (social media), seguimos creando los botones con imágenes
       const img = document.createElement('img');
       img.src = buttonData.image;
       img.alt = '';
@@ -88,3 +89,4 @@ document.addEventListener('DOMContentLoaded', () => {
     button.style.top = `calc(50vh + ${topVH}vh)`;
   }
 });
+
