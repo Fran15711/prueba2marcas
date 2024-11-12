@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Añadir el script externo al documento
   const script = document.createElement('script');
-  script.src = 'https://raw.githubusercontent.com/prueba2marcas/radio.js';
+  script.src = 'https://raw.githubusercontent.com/Fran15711/prueba2marcas/refs/heads/main/radio.js';
   document.head.appendChild(script);
 
   script.onload = function() {
@@ -36,13 +36,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function createHexButtons(buttons) {
     buttons.forEach((buttonData, i) => {
-      const button = createButton(buttonData);
-      seccion3.appendChild(button);
-      positionButtons(button, (i % 2 === 0 ? -35 : 30), (i < 2 ? -30 : 30));
-
-      setTimeout(() => {
-        button.classList.add('show');
-      }, i * 50);
+      // Si es el botón externo, no creamos un botón manual
+      if (buttonData.isExternalAudio) {
+        // Esperamos que `initializeExternalAudioPlayer` o la función en radio.js cree y muestre el botón
+        if (typeof initializeExternalAudioPlayer === 'function') {
+          initializeExternalAudioPlayer(seccion3); // Llamamos la función que maneja el reproductor externo
+        } else {
+          console.error('La función initializeExternalAudioPlayer no está definida en radio.js');
+        }
+      } else {
+        // Creamos botones para enlaces de redes sociales
+        const button = createButton(buttonData);
+        seccion3.appendChild(button);
+        positionButtons(button, (i % 2 === 0 ? -35 : 30), (i < 2 ? -30 : 30));
+  
+        setTimeout(() => {
+          button.classList.add('show');
+        }, i * 50);
+      }
     });
   }
 
@@ -54,20 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const button = document.createElement('button');
     button.classList.add('dynamic-button');
     
-    if (buttonData.isExternalAudio) {
-      // Este botón es reemplazado por el botón y visualizador del script externo (radio.js)
-      // Eliminamos la creación de una imagen para el primer botón y lo dejamos vacío
-      button.textContent = "Reproducir Audio Externo"; // Texto opcional si se desea
-      button.addEventListener('click', () => {
-        // Aquí vamos a cargar el visualizador y el audio del script externo
-        if (typeof initializeExternalAudioPlayer === 'function') {
-          initializeExternalAudioPlayer(seccion3); // Llamamos a la función para inicializar el reproductor
-        } else {
-          console.error('La función initializeExternalAudioPlayer no está definida.');
-        }
-      });
-    } else if (buttonData.link) {
-      // Para los otros botones (social media), seguimos creando los botones con imágenes
+    if (buttonData.link) {
       const img = document.createElement('img');
       img.src = buttonData.image;
       img.alt = '';
@@ -89,4 +87,3 @@ document.addEventListener('DOMContentLoaded', () => {
     button.style.top = `calc(50vh + ${topVH}vh)`;
   }
 });
-
