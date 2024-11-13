@@ -16,15 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const hexagons = document.querySelectorAll('.hex');
   const seccion3 = document.querySelector('.seccion3');
 
-  // Añadir el script externo al documento
-  const script = document.createElement('script');
-  script.src = 'https://raw.githubusercontent.com/Fran15711/prueba2marcas/refs/heads/main/radio.js';
-  document.head.appendChild(script);
-
-  script.onload = function() {
-    console.log('Script radio.js cargado correctamente.');
-  };
-
   hexagons.forEach((hex, index) => {
     hex.addEventListener('click', () => {
       if (index === 0) {
@@ -36,15 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function createHexButtons(buttons) {
     buttons.forEach((buttonData, i) => {
-      // Si es el botón externo, no creamos un botón manual
+      // Si es el botón externo, cargamos el HTML
       if (buttonData.isExternalAudio) {
-        console.log('Creando botón de audio externo...');
-        // Esperamos que `initializeExternalAudioPlayer` o la función en radio.js cree y muestre el botón
-        if (typeof initializeExternalAudioPlayer === 'function') {
-          initializeExternalAudioPlayer(seccion3); // Llamamos la función que maneja el reproductor externo
-        } else {
-          console.error('La función initializeExternalAudioPlayer no está definida en radio.js');
-        }
+        console.log('Cargando HTML para el audio externo...');
+        loadExternalHTML('https://raw.githubusercontent.com/Fran15711/prueba2marcas/refs/heads/main/radio.html');
       } else {
         // Creamos botones para enlaces de redes sociales
         const button = createButton(buttonData);
@@ -56,6 +42,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }, i * 50);
       }
     });
+  }
+
+  function loadExternalHTML(url) {
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.width = '100%'; // Ajusta el tamaño como lo necesites
+    iframe.height = '500px'; // Ajusta el tamaño según lo que quieras mostrar
+    iframe.style.border = 'none'; // Quita el borde si es necesario
+    seccion3.appendChild(iframe);
   }
 
   function removeButtons() {
