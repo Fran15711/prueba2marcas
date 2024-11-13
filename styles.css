@@ -1,112 +1,90 @@
-/* Seccion 3 */
+document.addEventListener('DOMContentLoaded', () => {
+  const hexData = [
+    {
+      buttons: [
+        { 
+          isExternalAudio: true // Indicamos que el primer botón es para el audio externo
+        },
+        { image: 'https://raw.githubusercontent.com/Fran15711/prueba1/main/pngegg.png', link: 'https://www.instagram.com' },
+        { image: 'https://raw.githubusercontent.com/Fran15711/prueba1/main/pngegg.png', link: 'https://www.twitter.com' },
+        { image: 'https://raw.githubusercontent.com/Fran15711/prueba1/main/pngegg.png', link: 'https://www.linkedin.com' }
+      ],
+      background: 'url("https://example.com/background-hex1.jpg")'
+    }
+  ];
 
-.seccion3 {
-    overflow: hidden;
-    font-family: "Poppins", sans-serif;
-    box-sizing: border-box;
-    text-align: center;
-    align-content: center;
-    position: relative;
-   background-size: cover;          /* Para que el fondo cubra todo el área */
-  background-position: center;     /* Centrar la imagen */
-  background-transition: background-image 0.5s ease-in-out;  /* Animación suave de cambio de fondo */
-}
+  const hexagons = document.querySelectorAll('.hex');
+  const seccion3 = document.querySelector('.seccion3');
 
-.seccion3 .panal {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vmin; /* Para centrar verticalmente */
-}
+  // Añadir el script externo al documento
+  const script = document.createElement('script');
+  script.src = 'https://raw.githubusercontent.com/Fran15711/prueba2marcas/refs/heads/main/radio.js';
+  document.head.appendChild(script);
 
-/* Estilo para el título */
-.seccion3 h2 {
-  font-size: 3.5em;
-  font-weight:bold;
-  color: #333;
+  script.onload = function() {
+    console.log('Script radio.js cargado correctamente.');
+  };
+
+  hexagons.forEach((hex, index) => {
+    hex.addEventListener('click', () => {
+      if (index === 0) {
+        removeButtons();
+        createHexButtons(hexData[index].buttons);
+      }
+    });
+  });
+
+  function createHexButtons(buttons) {
+    buttons.forEach((buttonData, i) => {
+      // Si es el botón externo, no creamos un botón manual
+      if (buttonData.isExternalAudio) {
+        console.log('Creando botón de audio externo...');
+        // Esperamos que `initializeExternalAudioPlayer` o la función en radio.js cree y muestre el botón
+        if (typeof initializeExternalAudioPlayer === 'function') {
+          initializeExternalAudioPlayer(seccion3); // Llamamos la función que maneja el reproductor externo
+        } else {
+          console.error('La función initializeExternalAudioPlayer no está definida en radio.js');
+        }
+      } else {
+        // Creamos botones para enlaces de redes sociales
+        const button = createButton(buttonData);
+        seccion3.appendChild(button);
+        positionButtons(button, (i % 2 === 0 ? -35 : 30), (i < 2 ? -30 : 30));
   
+        setTimeout(() => {
+          button.classList.add('show');
+        }, i * 50);
+      }
+    });
+  }
 
- font-family: 'Poppins', sans-serif;
-}
+  function removeButtons() {
+    document.querySelectorAll('.dynamic-button').forEach(button => button.remove());
+  }
 
-/* Estilo para el párrafo */
-.seccion3 p {
-  font-size: 1.2em;
-  color: #666;
-  margin-bottom: 30px;
- font-family: 'Poppins', sans-serif;
-}
+  function createButton(buttonData) {
+    const button = document.createElement('button');
+    button.classList.add('dynamic-button');
+    
+    if (buttonData.link) {
+      const img = document.createElement('img');
+      img.src = buttonData.image;
+      img.alt = '';
+      img.style.width = '4vw';
+      img.style.height = 'auto';
+      button.appendChild(img);
+      
+      button.addEventListener('click', () => {
+        window.open(buttonData.link, '_blank');
+      });
+    }
 
-/* Estilos para las filas de hexágonos */
-.seccion3 .hex-row {
-    display: flex;
-    justify-content: center;
-    gap: 7vmin; /* Espacio entre los hexágonos proporcional a la pantalla */
-}
+    return button;
+  }
 
-/* Estilos para los hexágonos */
-.seccion3 .hex {
-    width: 7vmin; /* Ancho proporcional */
-    height: 7vmin; /* Alto proporcional */
-    background-color: rgba(192, 192, 192, 0.5); /* Color gris con 50% de transparencia */
-    clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s; /* Animación al hacer hover */
-}
-
-.seccion3 .hex:hover {
-    transform: scale(1.8); /* Aumenta el hexágono al pasar el mouse */
-}
-
-/* Icono dentro de los hexágonos */
-.seccion3 .hex img {
-    width: 50%; /* Ajuste del tamaño del icono proporcional al hexágono */
-    height: auto;
-    object-fit: contain; /* Asegura que la imagen se ajuste al tamaño */
-    pointer-events: none; /* Evita que el clic afecte el icono */
-}
-
-/* Estilos para los botones dinámicos (solo imagen, sin fondo ni bordes) */
-
-.dynamic-button {
-    background-color: transparent; /* Sin fondo */
-    border: none; /* Sin bordes */
-    padding: 0; /* Sin relleno */
-    cursor: pointer; /* Cambiar cursor al pasar */
-    opacity: 0; /* Inicialmente oculto */
-    position: absolute;
-    transform: translateY(-5px); /* Posición inicial para animación */
-    transition: transform 0.5s ease, opacity 0.3s ease; /* Animación de entrada */
-}
-
-.dynamic-button img {
-    width: 80px; /* Tamaño de la imagen del botón, ajusta según necesites */
-    height: auto;
-    pointer-events: none; /* Evitar que el clic afecte la imagen */
-}
-
-/* Mostrar los botones con animación */
-.dynamic-button.show {
-    opacity: 1; /* Hacer visible el botón */
-    transform: translateY(0); /* Restablecer posición */
-}
-
-/* Efecto hover en los botones (si necesitas hover, pero solo para la imagen) */
-.dynamic-button:hover {
-    transform: translateY(-10px); /* Eleva el botón al pasar el mouse */
-}
-
-.dynamic-button:hover img {
-    opacity: 0.8; /* Reducir opacidad de la imagen al hacer hover */
-}
-
-/* Estilo para la sección de fondo */
-.seccion3 .seccion-background {
-    transition: background-image 0.5s ease-in-out; /* Transición suave */
-    height: 100%; /* Asegúrate de que la sección ocupe todo el espacio */
-    background-size: cover; /* Asegura que la imagen cubra todo el espacio */
-}
+  function positionButtons(button, leftVW, topVH) {
+    button.style.position = 'absolute';
+    button.style.left = `calc(50vw + ${leftVW}vw)`;
+    button.style.top = `calc(50vh + ${topVH}vh)`;
+  }
+});
