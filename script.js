@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buttons.forEach((buttonData, i) => {
       // Si es el botón externo, no creamos un botón manual
       if (buttonData.isExternalAudio) {
+        console.log('Creando botón de audio externo...');
         // Esperamos que `initializeExternalAudioPlayer` o la función en radio.js cree y muestre el botón
         if (typeof initializeExternalAudioPlayer === 'function') {
           initializeExternalAudioPlayer(seccion3); // Llamamos la función que maneja el reproductor externo
